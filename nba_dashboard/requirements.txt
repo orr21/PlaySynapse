@@ -1,0 +1,5 @@
+streamlit
+polars
+plotly
+deltalake
+s3fs

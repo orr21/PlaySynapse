@@ -1,0 +1,14 @@
+triggers:
+- description: null
+  envs: []
+  last_enabled_at: 2026-02-14 17:06:59.257310
+  name: always_run
+  pipeline_uuid: nba_pbp_realtime
+  schedule_interval: '@once'
+  schedule_type: time
+  settings: null
+  sla: null
+  start_time: 2026-02-14 17:06:00
+  status: active
+  token: c2bf5f3ebbc94b33864f7a9ecb626bbd
+  variables: {}

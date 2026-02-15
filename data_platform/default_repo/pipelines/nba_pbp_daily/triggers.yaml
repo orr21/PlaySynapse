@@ -1,0 +1,14 @@
+triggers:
+- description: null
+  envs: []
+  last_enabled_at: 2026-02-03 19:55:08.428832
+  name: daily_pbp_extraction_1000_wet
+  pipeline_uuid: nba_pbp_historical
+  schedule_interval: '@daily'
+  schedule_type: time
+  settings: null
+  sla: null
+  start_time: 2026-02-04 10:00:00
+  status: active
+  token: d2f9584a48ab4e0fab9cd401da517d87
+  variables: {}

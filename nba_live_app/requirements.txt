@@ -1,0 +1,4 @@
+gradio
+kafka-python
+groq
+huggingface-hub<0.23.0

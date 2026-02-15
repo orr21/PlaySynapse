@@ -1,0 +1,97 @@
+services:
+  # 1. ORQUESTADOR (Data Platform / Mage)
+  data_platform:
+    build:
+      context: ./data_platform
+      dockerfile: Dockerfile
+    container_name: data_platform
+    volumes:
+      - ./data_platform:/home/src
+    env_file: .env
+    environment:
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+    ports:
+      - "6789:6789"
+    depends_on:
+      - redpanda
+      - minio
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # 2. STORAGE (Data Lake)
+  minio:
+    image: orr03/minio-tfm:v1
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file: .env
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  # 3. STREAMING ENGINE (Redpanda - Kafka Compatible)
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: redpanda
+    command:
+      - redpanda start
+      - --smp 1
+      - --memory 1G
+      - --overprovisioned
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+      - --pandaproxy-addr internal://0.0.0.0:8082,external://0.0.0.0:8083
+      - --advertise-pandaproxy-addr internal://redpanda:8082,external://localhost:8083
+      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:8084
+    ports:
+      - "19092:19092"
+      - "8081:8081"
+      - "8082:8082"
+      - "9644:9644"
+    volumes:
+      - redpanda_data:/var/lib/redpanda/data
+
+  # 4. STREAMING UI
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: redpanda_console
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+    depends_on:
+      - redpanda
+
+  # 5. NBA LIVE APP (Gradio)
+  nba_live_app:
+    build:
+      context: ./nba_live_app
+      dockerfile: Dockerfile
+    container_name: nba_live_app
+    ports:
+      - "7860:7860"
+    env_file: .env
+    environment:
+      - REDPANDA_SERVER=redpanda:9092
+    depends_on:
+      - redpanda
+
+  # 6. NBA DASHBOARD (Streamlit)
+  nba_dashboard:
+    build:
+      context: ./nba_dashboard
+      dockerfile: Dockerfile
+    container_name: nba_dashboard
+    ports:
+      - "8501:8501"
+    env_file: .env
+    environment:
+      - MINIO_ENDPOINT=http://minio:9000
+    depends_on:
+      - minio
+
+volumes:
+  minio_data:
+  redpanda_data:

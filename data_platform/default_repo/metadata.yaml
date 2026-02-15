@@ -1,0 +1,17 @@
+project_type: standalone
+
+variables_dir: ~/.mage_data
+# remote_variables_dir: s3://bucket/path_prefix
+
+variables_retention_period: "90d"
+
+help_improve_mage: true
+notification_config:
+  alert_on:
+    - trigger_failure
+    - trigger_passed_sla
+  slack_config:
+    webhook_url: "{{ env_var('MAGE_SLACK_WEBHOOK_URL') }}"
+  teams_config:
+    webhook_url: "{{ env_var('MAGE_TEAMS_WEBHOOK_URL') }}"
+project_uuid: f60280d07b814a8bb009f2e569e14b49

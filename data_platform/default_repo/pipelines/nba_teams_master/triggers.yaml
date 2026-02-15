@@ -1,0 +1,14 @@
+triggers:
+- description: null
+  envs: []
+  last_enabled_at: 2026-02-03 19:59:29.401906
+  name: monthly_teams_check_01_1200_wet
+  pipeline_uuid: nba_teams_master
+  schedule_interval: '@monthly'
+  schedule_type: time
+  settings: null
+  sla: null
+  start_time: 2026-03-02 12:00:00
+  status: active
+  token: 051f256494764665a29de9ec6828404a
+  variables: {}

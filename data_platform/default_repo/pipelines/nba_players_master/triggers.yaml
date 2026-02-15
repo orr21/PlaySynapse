@@ -1,0 +1,14 @@
+triggers:
+- description: null
+  envs: []
+  last_enabled_at: 2026-02-03 19:56:09.575679
+  name: weekly_players_sync_monday_1100_wet
+  pipeline_uuid: nba_players_master
+  schedule_interval: '@weekly'
+  schedule_type: time
+  settings: null
+  sla: null
+  start_time: 2026-02-09 11:00:00
+  status: active
+  token: 7f2d51eb09cd4a3787cfdce2d1a3b7b0
+  variables: {}

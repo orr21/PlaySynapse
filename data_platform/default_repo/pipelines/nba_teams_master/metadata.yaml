@@ -1,0 +1,98 @@
+blocks:
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: data_loaders/fetch_teams_raw.py
+    file_source:
+      path: data_loaders/fetch_teams_raw.py
+  downstream_blocks:
+  - extract_unique_teams
+  - save_teams_to_minio_bronze
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: fetch_teams_raw
+  retry_config: null
+  status: executed
+  timeout: null
+  type: data_loader
+  upstream_blocks: []
+  uuid: fetch_teams_raw
+- all_upstream_blocks_executed: true
+  color: null
+  configuration: {}
+  downstream_blocks:
+  - save_teams_to_minio_silver
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: extract_unique_teams
+  retry_config: null
+  status: executed
+  timeout: null
+  type: transformer
+  upstream_blocks:
+  - fetch_teams_raw
+  uuid: extract_unique_teams
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: data_exporters/save_teams_to_minio_silver.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: save_teams_to_minio_silver
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - extract_unique_teams
+  uuid: save_teams_to_minio_silver
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_source:
+      path: data_exporters/save_teams_to_minio_bronze.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: save_teams_to_minio_bronze
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: data_exporter
+  upstream_blocks:
+  - fetch_teams_raw
+  uuid: save_teams_to_minio_bronze
+cache_block_output_in_memory: false
+callbacks: []
+concurrency_config: {}
+conditionals: []
+created_at: '2026-02-02 20:42:20.556560+00:00'
+data_integration: null
+description: null
+executor_config: {}
+executor_count: 1
+executor_type: null
+extensions: {}
+name: nba_teams_master
+notification_config: {}
+remote_variables_dir: null
+retry_config: {}
+run_pipeline_in_one_process: false
+settings:
+  triggers: null
+spark_config: {}
+tags: []
+type: python
+uuid: nba_teams_master
+variables_dir: /home/src/mage_data/default_repo
+widgets: []
