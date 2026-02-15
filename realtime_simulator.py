@@ -1,3 +1,11 @@
+"""
+Real-Time NBA Simulator.
+
+This script simulates a live NBA game by fetching Play-by-Play data from the NBA CDN
+and replaying it to a Kafka topic ('nba_live') at a controlled speed.
+It handles time synchronization to mimic real-time data ingestion.
+"""
+
 import json
 import requests
 import socket
@@ -6,6 +14,7 @@ import re
 import threading
 from confluent_kafka import Producer
 import os
+from typing import List, Dict, Any, Optional
 
 # ==========================================
 # ⚙️ CONFIGURACIÓN GLOBAL
@@ -35,8 +44,16 @@ CDN_URL_TEMPLATE = "https://cdn.nba.com/static/json/liveData/playbyplay/playbypl
 # 🛠️ FUNCIONES DE APOYO
 # ==========================================
 
-def clock_to_seconds(clock_str):
-    """Convierte formato PT12M00.00S a segundos restantes del cuarto"""
+def clock_to_seconds(clock_str: str) -> float:
+    """
+    Converts NBA API clock format (PT12M00.00S) to remaining seconds.
+
+    Args:
+        clock_str (str): Clock string from API.
+
+    Returns:
+        float: Remaining seconds in the period.
+    """
     if not clock_str: return 0.0
     # Formato esperado: PT12M00.00S
     match = re.search(r'PT(\d+)M(\d+\.?\d*)S', clock_str)
@@ -44,15 +61,30 @@ def clock_to_seconds(clock_str):
         return (int(match.group(1)) * 60) + float(match.group(2))
     return 0.0
 
-def get_period_duration(period):
-    """Retorna la duración total del periodo en segundos (12 min o 5 min OT)"""
+def get_period_duration(period: int) -> int:
+    """
+    Returns total duration of a period in seconds.
+    
+    Args:
+        period (int): Period number (1-4 for regular, >4 for OT).
+
+    Returns:
+        int: Duration in seconds (720 for regular, 300 for OT).
+    """
     return 300 if period > 4 else 720
 
 # ==========================================
 # 🏀 LÓGICA DE SIMULACIÓN POR PARTIDO
 # ==========================================
 
-def run_game_simulation(game_info, producer):
+def run_game_simulation(game_info: Dict[str, str], producer: Producer) -> None:
+    """
+    Simulates a single game execution in a separate thread.
+
+    Args:
+        game_info (Dict): Dictionary with 'id' and 'name'.
+        producer (Producer): Kafka Producer instance.
+    """
     game_id = game_info['id']
     game_name = game_info.get('name', game_id)
     

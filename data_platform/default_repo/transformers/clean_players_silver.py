@@ -1,5 +1,13 @@
+"""
+Transformer: clean_players_silver.
+
+This block transforms raw Bronze Player data into the Silver layer schema (SCD Type 2).
+It explodes the JSON structure, maps headers to columns, and ensures schema compliance.
+"""
+
 import polars as pl
 from datetime import datetime
+from typing import Any, Dict, List
 from default_repo.utils.schemas import PLAYERS_SILVER_SCHEMA, PLAYERS_SILVER_CRITICAL
 
 if 'transformer' not in globals():
@@ -9,7 +17,16 @@ if 'test' not in globals():
     from mage_ai.data_preparation.decorators import test
 
 @transformer
-def transform_to_weekly_scd2(df_bronze, *args, **kwargs):
+def transform_to_weekly_scd2(df_bronze: pl.DataFrame, *args, **kwargs) -> pl.DataFrame:
+    """
+    Transforms Bronze Player data to Silver SCD2 format.
+
+    Args:
+        df_bronze (pl.DataFrame): Input DataFrame from Bronze layer.
+
+    Returns:
+        pl.DataFrame: Transformed DataFrame ready for Silver layer.
+    """
     # 1. Decodificación del JSON y extracción de la temporada
     # Asumimos que df_bronze tiene las columnas: ["season", "raw_content"]
     df_transformed = df_bronze.with_columns([

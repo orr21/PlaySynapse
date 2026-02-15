@@ -1,9 +1,26 @@
+"""
+Data Exporter: save_pbp_to_minio_bronze.
+
+Saves raw Play-by-Play data to MinIO (Bronze Layer).
+Uses dynamic partitioning based on game date and ID.
+"""
+
 import boto3
 import os
 import polars as pl
+from typing import Any, Dict, List
+
+if 'data_exporter' not in globals():
+    from mage_ai.data_preparation.decorators import data_exporter
 
 @data_exporter
-def export_to_bronze(df, **kwargs):
+def export_to_bronze(df: pl.DataFrame, **kwargs) -> None:
+    """
+    Exports PBP DataFrame to MinIO Bronze bucket.
+
+    Args:
+        df (pl.DataFrame): Data containing raw JSON content.
+    """
     if df.height == 0:
         print("⚠️ No hay datos para exportar a Bronze.")
         return

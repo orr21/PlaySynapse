@@ -1,10 +1,25 @@
+"""
+Data Exporter: save_pbp_to_silver.
+
+Saves cleaned PBP data to MinIO (Silver Layer) using Delta Lake.
+Applies partitioning by year/month/day/game_id.
+"""
+
 import os
+import polars as pl
+from typing import Any, Dict, List
 
 if 'data_exporter' not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
 
 @data_exporter
-def export_to_delta(df, **kwargs):
+def export_to_delta(df: pl.DataFrame, **kwargs) -> None:
+    """
+    Exports PBP DataFrame to Silver Delta Table.
+
+    Args:
+        df (pl.DataFrame): Cleaned PBP data.
+    """
     if df.height == 0: return
 
     # Predicado para idempotencia basado en los IDs del partido

@@ -1,5 +1,13 @@
+"""
+Transformer: clean_pbp_silver.
+
+This block transforms raw Play-by-Play data to the Silver layer format.
+It uses batch processing to handle large JSON datasets efficiently and normalizes column names.
+"""
+
 import polars as pl
 import json
+from typing import Any, Dict, List
 
 if 'transformer' not in globals():
     from mage_ai.data_preparation.decorators import transformer
@@ -7,7 +15,16 @@ if 'test' not in globals():
     from mage_ai.data_preparation.decorators import test
 
 @transformer
-def transform_pbp_batch_optimized(df_bronze, *args, **kwargs):
+def transform_pbp_batch_optimized(df_bronze: pl.DataFrame, *args, **kwargs) -> pl.DataFrame:
+    """
+    Transforms raw PBP data using batch processing for memory efficiency.
+
+    Args:
+        df_bronze (pl.DataFrame): Input DataFrame with raw JSON content.
+
+    Returns:
+        pl.DataFrame: Flattened and normalized PBP data.
+    """
     # Convertimos a lista de dicts para iterar rápido en Python puro
     raw_data = df_bronze.to_dicts()
     total_games = len(raw_data)

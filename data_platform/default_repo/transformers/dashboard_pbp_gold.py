@@ -1,4 +1,12 @@
+"""
+Transformer: dashboard_pbp_gold.
+
+This block aggregates Play-by-Play Silver data into player stats for the Gold Dashboard.
+It calculates points, rebounds, assists, and efficiency metrics, joining with team metadata.
+"""
+
 import polars as pl
+from typing import Any, Dict, List
 from default_repo.utils.schemas import DASHBOARD_GOLD_SCHEMA, DASHBOARD_GOLD_OUTPUT_CRITICAL
 
 if 'transformer' not in globals():
@@ -8,7 +16,16 @@ if 'test' not in globals():
     from mage_ai.data_preparation.decorators import test
 
 @transformer
-def transform_pbp_to_dashboard_schema(pbp_df: pl.DataFrame):
+def transform_pbp_to_dashboard_schema(pbp_df: pl.DataFrame, *args, **kwargs) -> pl.DataFrame:
+    """
+    Aggregates PBP data into Gold Dashboard stats.
+
+    Args:
+        pbp_df (pl.DataFrame): Input Play-by-Play data.
+
+    Returns:
+        pl.DataFrame: Aggregated player statistics with calculated metrics.
+    """
     # -------------------------------------------------------------------------
     # PASO 0: CALCULAR OPONENTES CON LOS DATOS CRUDOS (CRÍTICO)
     # -------------------------------------------------------------------------

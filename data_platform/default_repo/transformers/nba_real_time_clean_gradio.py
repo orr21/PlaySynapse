@@ -1,4 +1,11 @@
-from typing import Dict, List
+"""
+Transformer: nba_real_time_clean_gradio.
+
+This block transforms real-time Kafka messages for the Gradio App.
+It enriches events with AI prompts for commentary generation and formats the data.
+"""
+
+from typing import Dict, List, Any, Optional
 import requests
 import json
 from datetime import datetime
@@ -9,8 +16,8 @@ if 'transformer' not in globals():
 # Caché para evitar peticiones repetitivas al CDN de la NBA
 CACHED_TEAMS = {}
 
-def fetch_team_names(game_id: str) -> Dict:
-    """Obtiene nombres y tricodes de los equipos usando el boxscore de la NBA."""
+def fetch_team_names(game_id: str) -> Optional[Dict[str, str]]:
+    """Obtains team names and tricodes using the NBA boxscore."""
     if not game_id or game_id in CACHED_TEAMS:
         return CACHED_TEAMS.get(game_id)
     
@@ -32,10 +39,11 @@ def fetch_team_names(game_id: str) -> Dict:
             CACHED_TEAMS[game_id] = info
             return info
     except Exception as e:
-        print(f"⚠️ Error accediendo al CDN de la NBA ({game_id}): {e}")
+        print(f"⚠️ Error accessing NBA CDN ({game_id}): {e}")
     return None
 
-def generar_prompt_nba(row):
+def generar_prompt_nba(row: Dict[str, Any]) -> str:
+    """Generates a structured prompt for the AI commentator based on the event row."""
     # --- 1. Datos Universales ---
     # Manejo de múltiples posibles nombres de columnas para el marcador
     h_score = row.get('scoreHome') or row.get('homeScore', 0)
@@ -112,7 +120,16 @@ def generar_prompt_nba(row):
     return "\n".join(ficha_dinamica)
 
 @transformer
-def transform(messages: List[Dict], *args, **kwargs):
+def transform(messages: List[Dict], *args, **kwargs) -> List[Dict]:
+    """
+    Transforms a batch of Kafka messages into enriched events for the UI.
+
+    Args:
+        messages (List[Dict]): List of Kafka messages.
+
+    Returns:
+        List[Dict]: Enriched events with AI prompts.
+    """
     transformed_batch = []
 
     for msg in messages:

@@ -1,3 +1,10 @@
+"""
+Streaming Sink: nba_real_time_to_bronze.
+
+Exports raw real-time events to MinIO (Bronze Layer) for archival.
+Files are partitioned by date and time.
+"""
+
 from mage_ai.streaming.sinks.base_python import BasePythonSink
 from typing import Callable, Dict, List
 import boto3
@@ -9,6 +16,9 @@ if 'streaming_sink' not in globals():
 
 @streaming_sink
 class BronzeNbaSink(BasePythonSink):
+    """
+    S3/MinIO Sink for archiving raw streaming data.
+    """
     def init_client(self):
         self.client = boto3.client(
             's3',

@@ -1,11 +1,27 @@
+"""
+Data Loader: fetch_players_raw.
+
+Downloads raw player statistics for the current season using the NbaConnector.
+"""
+
 from default_repo.utils.connectors.basketball.league.nba import NbaConnector
 import polars as pl
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
+from typing import Any, Dict, List
+
+if 'data_loader' not in globals():
+    from mage_ai.data_preparation.decorators import data_loader
 
 @data_loader
-def load_current_season_players(*args, **kwargs):
+def load_current_season_players(*args, **kwargs) -> pl.DataFrame:
+    """
+    Fetches raw player data for the current NBA season.
+
+    Returns:
+        pl.DataFrame: DataFrame containing the raw JSON response and metadata.
+    """
     connector = NbaConnector()
     
     # 1. Calculamos la season actual dinámicamente

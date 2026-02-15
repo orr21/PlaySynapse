@@ -1,12 +1,26 @@
+"""
+Data Exporter: save_pbp_to_minio_gold.
+
+Merges PBP data into the Gold Layer (Delta Lake) with idempotency.
+Deletes existing records for the game before appending new ones.
+"""
+
 import os
 import polars as pl
-from deltalake import DeltaTable  # Required for the delete operation
+from deltalake import DeltaTable
+from typing import Any, Dict
 
 if 'data_exporter' not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
 
 @data_exporter
-def export_to_delta(df, **kwargs):
+def export_to_delta(df: pl.DataFrame, **kwargs) -> None:
+    """
+    Exports data to Gold Layer (Delta Lake).
+
+    Args:
+        df (pl.DataFrame): PBP data to export.
+    """
     if df.height == 0: return
 
     # 1. Clean nulls and get unique IDs

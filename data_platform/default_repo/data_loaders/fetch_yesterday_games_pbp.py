@@ -1,12 +1,32 @@
+"""
+Data Loader: fetch_yesterday_games_pbp.
+
+Downloads play-by-play data for games played in the last 3 days.
+Checks for completed games and avoids re-downloading existing data if possible.
+"""
+
 import polars as pl
 import requests
 import json
 from datetime import date, timedelta
 import os
 import time
+from typing import Any, Dict, List
+
+if 'data_loader' not in globals():
+    from mage_ai.data_preparation.decorators import data_loader
 
 @data_loader
-def load_pbp_data(schedule_df, *args, **kwargs):
+def load_pbp_data(schedule_df: pl.DataFrame, *args, **kwargs) -> pl.DataFrame:
+    """
+    Downloads PBP data for recent finished games.
+
+    Args:
+        schedule_df (pl.DataFrame): Schedule data to identify recent games.
+
+    Returns:
+        pl.DataFrame: Raw PBP data in JSON format.
+    """
     # Configuración de conexión (MinIO/S3)
     storage_options = {
         "AWS_ENDPOINT_URL": os.getenv('MINIO_ENDPOINT', 'http://minio:9000'),

@@ -1,3 +1,10 @@
+"""
+NBA Live Commentary App (Gradio).
+
+This application consumes real-time game events from Kafka, interactions with the Groq API
+to generate "Andrés Montes" style commentary, and displays a live dashboard using Gradio.
+"""
+
 import gradio as gr
 import json
 import threading
@@ -6,6 +13,7 @@ from kafka import KafkaConsumer
 from groq import Groq
 from datetime import datetime
 import time
+from typing import List, Dict, Any, Tuple, Optional
 
 # --- CONFIGURACIÓN ---
 REDPANDA_TOPIC = "nba_gold_events"
@@ -13,18 +21,29 @@ REDPANDA_SERVER = os.getenv("REDPANDA_SERVER", "redpanda:9092")
 groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 class SharedState:
+    """Thread-safe state for sharing data between Kafka consumer and UI."""
     def __init__(self):
-        self.selected_game_id = None
-        self.game_list = {}
-        self.raw_events = []      
-        self.visual_logs = []
-        self.current_score = "BUSCANDO SEÑAL..."
+        self.selected_game_id: Optional[str] = None
+        self.game_list: Dict[str, str] = {}
+        self.raw_events: List[Dict[str, Any]] = []      
+        self.visual_logs: List[Tuple[str, str, str, str]] = []
+        self.current_score: str = "BUSCANDO SEÑAL..."
         self.lock = threading.Lock()
-        self.game_histories = {}   # {game_id: [narraciones previas]}
+        self.game_histories: Dict[str, List[str]] = {}   # {game_id: [narraciones previas]}
 
 state = SharedState()
 
-def get_montes_commentary(ai_input, game_history=None):
+def get_montes_commentary(ai_input: str, game_history: List[str] = None) -> str:
+    """
+    Generates NBA commentary using Groq LLM in the style of Andrés Montes.
+
+    Args:
+        ai_input (str): The structured text describing the event.
+        game_history (List[str], optional): List of previous commentaries.
+
+    Returns:
+        str: Generated commentary.
+    """
     messages = []
     
     # 🎙️ Restaurado tu prompt original
@@ -64,7 +83,8 @@ def get_montes_commentary(ai_input, game_history=None):
     except Exception:
         return "¡Daimiel, algo pasa en la centralita!"
 
-def kafka_worker():
+def kafka_worker() -> None:
+    """Background thread to consume events from Redpanda/Kafka."""
     try:
         consumer = KafkaConsumer(
             REDPANDA_TOPIC,
@@ -85,7 +105,16 @@ def kafka_worker():
 
 threading.Thread(target=kafka_worker, daemon=True).start()
 
-def refresh_interface(selected_name):
+def refresh_interface(selected_name: str) -> Tuple[str, str]:
+    """
+    Updates the UI with the latest events for the selected game.
+
+    Args:
+        selected_name (str): Name of the game selected in the dropdown.
+
+    Returns:
+        Tuple[str, str]: (Scoreboard Markdown, Feed HTML)
+    """
     with state.lock:
         if not selected_name:
             return "## ESPERANDO PARTIDO", "<div style='text-align:center;'>Selecciona un partido...</div>"

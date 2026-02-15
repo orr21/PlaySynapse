@@ -1,11 +1,28 @@
+"""
+Data Exporter: save_players_to_minio_bronze.
+
+Saves raw Player data to MinIO (Bronze Layer).
+Partitions by ingestion date.
+"""
+
 import boto3
 import json
 import os
 import polars as pl
 from datetime import datetime
+from typing import Any, Dict, List
+
+if 'data_exporter' not in globals():
+    from mage_ai.data_preparation.decorators import data_exporter
 
 @data_exporter
-def export_to_bronze(df, **kwargs):
+def export_to_bronze(df: pl.DataFrame, **kwargs) -> None:
+    """
+    Exports Player DataFrame to MinIO Bronze bucket.
+
+    Args:
+        df (pl.DataFrame): Raw player data.
+    """
     s3_client = boto3.client(
         's3',
         endpoint_url=os.getenv('MINIO_ENDPOINT', 'http://minio:9000'),

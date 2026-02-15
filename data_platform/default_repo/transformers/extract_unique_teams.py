@@ -1,5 +1,13 @@
+"""
+Transformer: extract_unique_teams.
+
+This block extracts unique team information from Bronze data to populate the Silver Teams table.
+It handles JSON decoding, deduplication, and schema validation.
+"""
+
 import polars as pl
 from datetime import datetime
+from typing import Any, Dict, List
 
 if 'transformer' not in globals():
     from mage_ai.data_preparation.decorators import transformer
@@ -8,7 +16,16 @@ if 'test' not in globals():
     from mage_ai.data_preparation.decorators import test
 
 @transformer
-def transform(df_bronze, *args, **kwargs):
+def transform(df_bronze: pl.DataFrame, *args, **kwargs) -> pl.DataFrame:
+    """
+    Transforms Bronze data to unique Teams Silver format.
+
+    Args:
+        df_bronze (pl.DataFrame): Input DataFrame with raw team data.
+
+    Returns:
+        pl.DataFrame: DataFrame containing unique team records.
+    """
     # 1. Decodificación del JSON
     df_transformed = df_bronze.with_columns([
         pl.col("raw_content").str.json_decode()

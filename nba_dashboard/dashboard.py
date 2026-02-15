@@ -1,8 +1,17 @@
+"""
+NBA Gold Analytics Dashboard (Streamlit).
+
+This dashboard visualizes data from the Gold layer (Delta Lake/MinIO), allowing users
+to filter by season, date, game, and player. It features interactive tables and
+radar charts for performance analysis.
+"""
+
 import streamlit as st
 import polars as pl
 import plotly.graph_objects as go
 import os
 from datetime import date
+from typing import Optional, List, Dict, Any
 
 # -----------------------------------------------------------------------------
 # 1. CONFIGURATION
@@ -23,7 +32,13 @@ st.markdown(f"""
 # 2. DATA LOADING
 # -----------------------------------------------------------------------------
 @st.cache_data(ttl=3600)
-def get_nba_data():
+def get_nba_data() -> pl.DataFrame:
+    """
+    Loads NBA Play-by-Play Gold data from MinIO (Delta Lake).
+
+    Returns:
+        pl.DataFrame: The loaded data, or an empty DataFrame on error.
+    """
     storage_options = {
         "AWS_ENDPOINT_URL": os.getenv('MINIO_ENDPOINT', 'http://minio:9000'),
         "AWS_ACCESS_KEY_ID": os.getenv('MINIO_ROOT_USER', 'admin'),

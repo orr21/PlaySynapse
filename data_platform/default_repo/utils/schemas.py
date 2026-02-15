@@ -1,3 +1,10 @@
+"""
+Schemas Module.
+
+Defines the Polars Schemas for Silver and Gold layers.
+Includes validation logic to enforce data quality and consistency.
+"""
+
 import polars as pl
 
 # ==========================================

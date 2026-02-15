@@ -1,3 +1,10 @@
+"""
+Data Loader: pbp_download_historical.
+
+Downloads historical Play-by-Play data in parallel batches.
+Uses ThreadPoolExecutor for concurrent downloads from the NBA CDN.
+"""
+
 import requests
 import json
 import polars as pl
@@ -6,12 +13,21 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from typing import Any, Dict, List, Optional
 
 if 'data_loader' not in globals():
     from mage_ai.data_preparation.decorators import data_loader
 
-def fetch_single_game(game):
-    """Descarga un solo juego (igual que antes)"""
+def fetch_single_game(game: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """
+    Downloads a single game's PBP data from the CDN.
+
+    Args:
+        game (Dict): Dictionary containing GAME_ID and SEASON.
+
+    Returns:
+        Optional[Dict]: The downloaded data or None if failed.
+    """
     gid = game['GAME_ID']
     season = game.get('SEASON', 'N/A')
     
@@ -45,7 +61,16 @@ def fetch_single_game(game):
     return None
 
 @data_loader
-def download_pbp_chunked(df_games, *args, **kwargs):
+def download_pbp_chunked(df_games: pl.DataFrame, *args, **kwargs) -> pl.DataFrame:
+    """
+    Downloads PBP data in parallel chunks.
+
+    Args:
+        df_games (pl.DataFrame): DataFrame containing list of games to download.
+
+    Returns:
+        pl.DataFrame: Consolidated PBP data.
+    """
     game_list = df_games.to_dicts()
     total_games = len(game_list)
     

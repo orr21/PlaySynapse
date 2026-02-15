@@ -1,13 +1,27 @@
+"""
+Data Loader: updated_schedule.
+
+Fetches the NBA league schedule and normalizes it for the data platform.
+Handles nested JSON structures and ensures schema consistency.
+"""
+
 import polars as pl
 import requests
 import json
 from datetime import datetime
+from typing import Any, Dict, List
 
 if 'data_loader' not in globals():
     from mage_ai.data_preparation.decorators import data_loader
 
 @data_loader
-def load_and_transform_nba_schedule(*args, **kwargs):
+def load_and_transform_nba_schedule(*args, **kwargs) -> pl.DataFrame:
+    """
+    Loads and transforms the NBA schedule from the CDN.
+
+    Returns:
+        pl.DataFrame: Flattened and normalized schedule data.
+    """
     # 1. Extraction
     url = "https://cdn.nba.com/static/json/staticData/scheduleLeagueV2.json"
     try:

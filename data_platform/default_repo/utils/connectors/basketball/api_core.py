@@ -1,7 +1,17 @@
+"""
+NBA Stats API Core.
+
+Handles direct HTTP requests to stats.nba.com and builds parameters for various endpoints.
+"""
+
 import requests
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 
 class StatsAPIClient:
+    """
+    Client for interacting with the NBA Stats API.
+    Handles headers, timeouts, and basic error checking.
+    """
     BASE_URL = "https://stats.nba.com/stats"
     
     def __init__(self, timeout: int = 30):
@@ -16,30 +26,44 @@ class StatsAPIClient:
         }
     
     def make_request(self, endpoint: str, params: dict) -> Optional[dict]:
+        """
+        Sends a GET request to the specified endpoint.
+
+        Args:
+            endpoint (str): API endpoint (e.g., 'leaguedashplayerbiostats').
+            params (dict): Query parameters.
+
+        Returns:
+            Optional[dict]: JSON response or None if failed.
+        """
         url = f"{self.BASE_URL}/{endpoint}"
         try:
             response = requests.get(url, headers=self.headers, params=params, timeout=self.timeout)
             response.raise_for_status()
             return response.json()
         except Exception as e:
+            print(f"StatsAPIClient Error: {e}")
             return None
 
 class ParameterBuilder:
+    """Helper class to construct parameter dictionaries for API calls."""
+    
     @staticmethod
     def build_team_params(season: str, 
             league_id: str = '00', 
             perMode: str = 'Totals', 
-            date_from: str = '',  # <--- Añadir esto
-            date_to: str = ''    # <--- Añadir esto
-        ):    
+            date_from: str = '', 
+            date_to: str = '' 
+        ) -> Dict[str, str]:    
+        """Builds parameters for Team stats."""
         return {
             'MeasureType': 'Base', 
             'PerMode': perMode, 
             'LeagueID': league_id,
             'Season': season, 
             'SeasonType': 'Regular Season',
-            'DateFrom': date_from,  # Formato: MM/DD/YYYY
-            'DateTo': date_to,      # Formato: MM/DD/YYYY
+            'DateFrom': date_from,
+            'DateTo': date_to,
             'PlusMinus': 'N',
             'PaceAdjust': 'N', 
             'Rank': 'N', 
@@ -69,17 +93,18 @@ class ParameterBuilder:
             season: str, 
             league_id: str = '00', 
             perMode: str = 'Totals', 
-            date_from: str = '',  # <--- Añadir esto
-            date_to: str = ''    # <--- Añadir esto
-        ):    
+            date_from: str = '', 
+            date_to: str = '' 
+        ) -> Dict[str, str]:    
+        """Builds parameters for Player stats."""
         return {
             'MeasureType': 'Base', 
             'PerMode': perMode, 
             'LeagueID': league_id,
             'Season': season, 
             'SeasonType': 'Regular Season',
-            'DateFrom': date_from,  # Formato: MM/DD/YYYY
-            'DateTo': date_to,      # Formato: MM/DD/YYYY
+            'DateFrom': date_from,
+            'DateTo': date_to,
             'PlusMinus': 'N',
             'PaceAdjust': 'N', 
             'Rank': 'N', 
@@ -106,6 +131,7 @@ class ParameterBuilder:
 
     @staticmethod
     def build_game_log_params(season: str, league_id: str = '00') -> Dict[str, str]:
+        """Builds parameters for League Game Logs."""
         return {
             'Counter': '1000',
             'DateFrom': '',
@@ -120,9 +146,10 @@ class ParameterBuilder:
 
     @staticmethod
     def build_pbp_params(game_id: str) -> Dict[str, str]:
+        """Builds parameters for Play-by-Play."""
         safe_id = str(game_id).zfill(10)
         return {
             'GameID': safe_id,
-            'StartPeriod': '0',  # 0 = Todo el partido
-            'EndPeriod': '14',   # 14 = Cubre hasta muchas prórrogas
+            'StartPeriod': '0',  # 0 = All periods
+            'EndPeriod': '14',   # 14 = Covers multiple OTs
         }

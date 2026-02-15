@@ -1,9 +1,23 @@
+"""
+Data Loader: load_historical_games_ids.
+
+Fetches all game IDs for specified historical seasons.
+Used to bootstrap the PBP downloader.
+"""
+
 from default_repo.utils.connectors.basketball.league.nba import NbaConnector
 import polars as pl
 import time
+from typing import Any, Dict, List
 
 @data_loader
-def load_all_ids(*args, **kwargs):
+def load_all_ids(*args, **kwargs) -> pl.DataFrame:
+    """
+    Fetches game IDs for historical seasons.
+
+    Returns:
+        pl.DataFrame: DataFrame with unique GAME_IDs.
+    """
     connector = NbaConnector()
     seasons = ['2024-25', '2025-26']
     all_dfs = []

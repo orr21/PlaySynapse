@@ -1,3 +1,10 @@
+"""
+Streaming Sink: export_to_gradio.
+
+Exports enriched real-time events to the 'nba_gold_events' Kafka topic.
+This topic is consumed by the Gradio App for live updates.
+"""
+
 from mage_ai.streaming.sinks.base_python import BasePythonSink
 from kafka import KafkaProducer
 import json
@@ -9,6 +16,10 @@ if 'streaming_sink' not in globals():
 
 @streaming_sink
 class RedpandaGoldSink(BasePythonSink):
+    """
+    Kafka Sink for sending events to the UI.
+    Uses 'nba_gold_events' topic.
+    """
     def init_client(self):
         self.topic = 'nba_gold_events'
         self.producer = KafkaProducer(
