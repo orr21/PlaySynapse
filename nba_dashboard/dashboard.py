@@ -217,7 +217,7 @@ if not df_all.is_empty():
                             min(p['reb']/15, 1), 
                             min(p['ast']/12, 1), 
                             min((p['stl']+p['blk'])/6, 1),
-                            f"{p['pct_fg']*100:.1f}%"
+                            p['pct_fg']
                         ]
                         
                         r_absolute = [
