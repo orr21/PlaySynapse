@@ -38,12 +38,12 @@ graph TD
     A[Simulator / NBA API] -->|Raw Events| B(Redpanda: nba_live)
     B -->|Consumer| C{Mage: Streaming Pipeline}
     C -->|Processed Events + AI Prompt| D(Redpanda: nba_gold_events)
-    D -->|Consumer| E[NBA Live App (Gradio)]
+    D -->|Consumer| E[NBA Live App]
     E -->|Narrative Generation| F[Groq LLM]
 
     G[Populate Historical Data] -->|Batch Pipeline| H{Mage: Batch ETL}
     H -->|Write Delta Tables| I[(MinIO: Bronze/Silver/Gold)]
-    I -->|Query| J[NBA Dashboard (Streamlit)]
+    I -->|Query| J[NBA Dashboard]
 ```
 
 ## 🏗️ Estructura del Proyecto
