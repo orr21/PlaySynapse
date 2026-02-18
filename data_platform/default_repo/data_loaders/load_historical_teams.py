@@ -12,6 +12,7 @@ from datetime import datetime
 import json
 from typing import Any, Dict, List
 
+
 @data_loader
 def load_multi_season_teams(*args, **kwargs) -> pl.DataFrame:
     """
@@ -21,31 +22,28 @@ def load_multi_season_teams(*args, **kwargs) -> pl.DataFrame:
         pl.DataFrame: DataFrame with raw team data per season.
     """
     connector = NbaConnector()
-    # Definimos el rango de temporadas que quieres traer
-    seasons = ['2023-24', '2024-25']
-    
+
+    seasons = ["2023-24", "2024-25"]
+
     all_season_responses = []
 
     for season in seasons:
         print(f"📥 Downloading Teams Profile - Season: {season}")
-        
-        # Hacemos la petición sin DateFrom/DateTo para obtener 
-        # la ficha más actualizada del jugador en esa temporada.
+
         json_response = connector.fetch_data(
-            metric_type='season_teams', 
-            season=season, 
-            perMode='Totals' 
+            metric_type="season_teams", season=season, perMode="Totals"
         )
-        
+
         if json_response:
-            # Guardamos el contenido indicando a qué temporada pertenece
-            all_season_responses.append({
-                "season": season,
-                "raw_content": json.dumps(json_response),
-                "ingested_at": datetime.now().isoformat()
-            })
-        
-        # Respetamos el límite de la API para no ser bloqueados
+
+            all_season_responses.append(
+                {
+                    "season": season,
+                    "raw_content": json.dumps(json_response),
+                    "ingested_at": datetime.now().isoformat(),
+                }
+            )
+
         time.sleep(1.5)
-            
+
     return pl.DataFrame(all_season_responses)

@@ -10,6 +10,7 @@ import polars as pl
 import time
 from typing import Any, Dict, List
 
+
 @data_loader
 def load_all_ids(*args, **kwargs) -> pl.DataFrame:
     """
@@ -19,21 +20,19 @@ def load_all_ids(*args, **kwargs) -> pl.DataFrame:
         pl.DataFrame: DataFrame with unique GAME_IDs.
     """
     connector = NbaConnector()
-    seasons = ['2024-25', '2025-26']
+    seasons = ["2024-25", "2025-26"]
     all_dfs = []
 
     for season in seasons:
-        data = connector.fetch_data(metric_type='season_games', season=season)
-        res = data['resultSets'][0]
-        
-        df_season = pl.DataFrame(res['rowSet'], schema=res['headers'], orient="row")
-        
-        df_clean = df_season.select([
-            pl.col("GAME_ID"),
-            pl.col("GAME_DATE"),
-            pl.lit(season).alias("SEASON") 
-        ]).unique()
-        
+        data = connector.fetch_data(metric_type="season_games", season=season)
+        res = data["resultSets"][0]
+
+        df_season = pl.DataFrame(res["rowSet"], schema=res["headers"], orient="row")
+
+        df_clean = df_season.select(
+            [pl.col("GAME_ID"), pl.col("GAME_DATE"), pl.lit(season).alias("SEASON")]
+        ).unique()
+
         all_dfs.append(df_clean)
         time.sleep(1)
 

@@ -21,23 +21,20 @@ PBP_SILVER_SCHEMA = {
     "year": pl.Int32,
     "month": pl.Int8,
     "day": pl.Int8,
-    
     # Time & Period
     "clock": pl.Utf8,
     "timeactual": pl.Utf8,
     "period": pl.Int64,
     "periodtype": pl.Utf8,
-    
     # Event Info
     "actiontype": pl.Utf8,
     "subtype": pl.Utf8,
     "description": pl.Utf8,
-    "qualifiers": pl.List(pl.Utf8), # Usually a list of strings
+    "qualifiers": pl.List(pl.Utf8),  # Usually a list of strings
     "descriptor": pl.Utf8,
     "edited": pl.Utf8,
     "isfieldgoal": pl.Int64,
     "istargetscorelastperiod": pl.Int64,
-    
     # Coordinates & Area
     "x": pl.Float64,
     "y": pl.Float64,
@@ -48,20 +45,17 @@ PBP_SILVER_SCHEMA = {
     "side": pl.Utf8,
     "shotdistance": pl.Float64,
     "shotresult": pl.Utf8,
-    
     # Team & Score
     "teamid": pl.Int64,
     "teamtricode": pl.Utf8,
     "possession": pl.Int64,
     "scorehome": pl.Utf8,
     "scoreaway": pl.Utf8,
-    
     # Persons involved (Main)
     "personid": pl.Int64,
     "playername": pl.Utf8,
-    "playernamei": pl.Utf8, # Initials/Short name
+    "playernamei": pl.Utf8,  # Initials/Short name
     "personidsfilter": pl.List(pl.Int64),
-    
     # Specific Event Details - Jumpball
     "jumpballrecoveredname": pl.Utf8,
     "jumpballrecoverdpersonid": pl.Int64,
@@ -69,32 +63,28 @@ PBP_SILVER_SCHEMA = {
     "jumpballwonpersonid": pl.Int64,
     "jumpballlostplayername": pl.Utf8,
     "jumpballlostpersonid": pl.Int64,
-    
     # Shot/Rebound
     "shotactionnumber": pl.Int64,
     "reboundtotal": pl.Int64,
     "rebounddefensivetotal": pl.Int64,
     "reboundoffensivetotal": pl.Int64,
     "pointstotal": pl.Int64,
-    
     # Assist
     "assistpersonid": pl.Int64,
     "assistplayernameinitial": pl.Utf8,
     "assisttotal": pl.Int64,
-    
     # Fouls & Officials
     "officialid": pl.Int64,
     "foulpersonaltotal": pl.Int64,
     "foultechnicaltotal": pl.Int64,
     "fouldrawnpersonid": pl.Int64,
     "fouldrawnplayername": pl.Utf8,
-    
     # Turnovers/Steals/Blocks
     "turnovertotal": pl.Int64,
     "stealpersonid": pl.Int64,
     "stealplayername": pl.Utf8,
     "blockpersonid": pl.Int64,
-    "blockplayername": pl.Utf8
+    "blockplayername": pl.Utf8,
 }
 
 PLAYERS_SILVER_SCHEMA = {
@@ -122,7 +112,7 @@ PLAYERS_SILVER_SCHEMA = {
     "usg_pct": pl.Float64,
     "ts_pct": pl.Float64,
     "ast_pct": pl.Float64,
-    "ingested_date": pl.Date
+    "ingested_date": pl.Date,
 }
 
 TEAMS_SILVER_SCHEMA = {
@@ -131,28 +121,26 @@ TEAMS_SILVER_SCHEMA = {
     "teamcity": pl.Utf8,
     "teamname": pl.Utf8,
     "full_name": pl.Utf8,
-    "abbreviation": pl.Utf8, # Usually generic, mapped from 'team_abbreviation' if avail or derived
+    "abbreviation": pl.Utf8,  # Usually generic, mapped from 'team_abbreviation' if avail or derived
     "teamslug": pl.Utf8,
     "logo_url": pl.Utf8,
     "season": pl.Utf8,
     "ingested_date": pl.Date,
-    
     # Conference / Division Info
     "leagueid": pl.Utf8,
     "conference": pl.Utf8,
     "division": pl.Utf8,
     "leaguerank": pl.Int64,
     "playoffrank": pl.Int64,
-    "playoffseeding": pl.Utf8, # Sometimes null or distinct from rank
-    "clinchindicator": pl.Utf8, 
+    "playoffseeding": pl.Utf8,  # Sometimes null or distinct from rank
+    "clinchindicator": pl.Utf8,
     "clinchedconferencetitle": pl.Int64,
     "clincheddivisiontitle": pl.Int64,
     "clinchedplayoffbirth": pl.Int64,
-    "clinchedplayin": pl.Int64, 
+    "clinchedplayin": pl.Int64,
     "clinchedpostseason": pl.Int64,
     "eliminatedconference": pl.Int64,
     "eliminateddivision": pl.Int64,
-    
     # Records & Standings
     "wins": pl.Int64,
     "losses": pl.Int64,
@@ -163,14 +151,13 @@ TEAMS_SILVER_SCHEMA = {
     "conferencegamesback": pl.Float64,
     "divisiongamesback": pl.Float64,
     "leaguegamesback": pl.Float64,
-    
     # Streaks
-    "home": pl.Utf8, # Record Home
-    "road": pl.Utf8, # Record Road
+    "home": pl.Utf8,  # Record Home
+    "road": pl.Utf8,  # Record Road
     "l10": pl.Utf8,
     "last10home": pl.Utf8,
     "last10road": pl.Utf8,
-    "ot": pl.Utf8, # Overtime Record
+    "ot": pl.Utf8,  # Overtime Record
     "threeptsorless": pl.Utf8,
     "tenptsormore": pl.Utf8,
     "longhomestreak": pl.Int64,
@@ -185,7 +172,6 @@ TEAMS_SILVER_SCHEMA = {
     "strcurrentroadstreak": pl.Utf8,
     "currentstreak": pl.Int64,
     "strcurrentstreak": pl.Utf8,
-    
     # Performance Stats (Ahead/Behind)
     "aheadathalf": pl.Utf8,
     "behindathalf": pl.Utf8,
@@ -200,12 +186,19 @@ TEAMS_SILVER_SCHEMA = {
     "leadinreb": pl.Utf8,
     "fewerturnovers": pl.Utf8,
     "neutral": pl.Utf8,
-    
     # Monthly Breakdown (Records)
-    "jan": pl.Utf8, "feb": pl.Utf8, "mar": pl.Utf8, "apr": pl.Utf8, 
-    "may": pl.Utf8, "jun": pl.Utf8, "jul": pl.Utf8, "aug": pl.Utf8, 
-    "sep": pl.Utf8, "oct": pl.Utf8, "nov": pl.Utf8, "dec": pl.Utf8,
-    
+    "jan": pl.Utf8,
+    "feb": pl.Utf8,
+    "mar": pl.Utf8,
+    "apr": pl.Utf8,
+    "may": pl.Utf8,
+    "jun": pl.Utf8,
+    "jul": pl.Utf8,
+    "aug": pl.Utf8,
+    "sep": pl.Utf8,
+    "oct": pl.Utf8,
+    "nov": pl.Utf8,
+    "dec": pl.Utf8,
     # Points Stats
     "pointspg": pl.Float64,
     "opppointspg": pl.Float64,
@@ -217,7 +210,6 @@ TEAMS_SILVER_SCHEMA = {
     "opp_score_80_plus": pl.Utf8,
     "score_below_80": pl.Utf8,
     "opp_score_below_80": pl.Utf8,
-    
     # VS Opponents
     "vseast": pl.Utf8,
     "vsatlantic": pl.Utf8,
@@ -226,7 +218,7 @@ TEAMS_SILVER_SCHEMA = {
     "vswest": pl.Utf8,
     "vsnorthwest": pl.Utf8,
     "vspacific": pl.Utf8,
-    "vssouthwest": pl.Utf8
+    "vssouthwest": pl.Utf8,
 }
 
 # ==========================================
@@ -242,7 +234,6 @@ DASHBOARD_GOLD_SCHEMA = {
     "game_date": pl.Date,
     "season": pl.Utf8,
     "opponent": pl.Utf8,
-    
     # Métricas
     "pts": pl.Int64,
     "reb": pl.Int64,
@@ -250,7 +241,6 @@ DASHBOARD_GOLD_SCHEMA = {
     "stl": pl.Int64,
     "blk": pl.Int64,
     "tov": pl.Int64,
-    
     # Tiro
     "fga": pl.Int64,
     "fgm": pl.Int64,
@@ -258,14 +248,12 @@ DASHBOARD_GOLD_SCHEMA = {
     "3pm": pl.Int64,
     "fta": pl.Int64,
     "ftm": pl.Int64,
-    
     # Porcentajes y calculados
     "pct_fg": pl.Float64,
     "pct_3": pl.Float64,
     "pct_ft": pl.Float64,
-    "plus_minus": pl.Int32
+    "plus_minus": pl.Int32,
 }
-
 
 
 # ==========================================
@@ -274,13 +262,16 @@ DASHBOARD_GOLD_SCHEMA = {
 PBP_SILVER_CRITICAL = ["game_id", "actionnumber", "period"]
 PLAYERS_SILVER_CRITICAL = ["player_id", "season"]
 TEAMS_SILVER_CRITICAL = ["teamid", "season"]
-DASHBOARD_GOLD_CRITICAL = ["game_id", "player_id", "points_value"] 
-# Note: points_value is critical for sum, but in gold 'pts' is the output. 
+DASHBOARD_GOLD_CRITICAL = ["game_id", "player_id", "points_value"]
+# Note: points_value is critical for sum, but in gold 'pts' is the output.
 # Gold criticals:
 DASHBOARD_GOLD_OUTPUT_CRITICAL = ["game_id", "player_id", "pts", "season"]
 
+
 # Helper para validación en tests
-def validate_schema(df: pl.DataFrame, schema_dict: dict, critical_columns: list = None) -> None:
+def validate_schema(
+    df: pl.DataFrame, schema_dict: dict, critical_columns: list = None
+) -> None:
     """
     Valida que un DataFrame de Polars cumpla estrictamente con el esquema dado.
     Optionalmente verifica que las 'critical_columns' no tengan nulos.
@@ -294,15 +285,17 @@ def validate_schema(df: pl.DataFrame, schema_dict: dict, critical_columns: list 
         if col_name not in df.columns:
             missing_cols.append(col_name)
             continue
-        
+
         # Obtenemos el tipo real
         actual_type = df.schema[col_name]
-        
+
         # Comparación flexible para Datetimes
         if actual_type != expected_type:
-             # Permitir mismatch si ambos son Float (ej Float32 vs Float64) o Int, 
-             # pero por ahora somos estrictos como pide el usuario.
-             wrong_types.append(f"{col_name}: Expected {expected_type}, got {actual_type}")
+            # Permitir mismatch si ambos son Float (ej Float32 vs Float64) o Int,
+            # pero por ahora somos estrictos como pide el usuario.
+            wrong_types.append(
+                f"{col_name}: Expected {expected_type}, got {actual_type}"
+            )
 
     # Validación de cruciales
     if critical_columns:
@@ -319,6 +312,6 @@ def validate_schema(df: pl.DataFrame, schema_dict: dict, critical_columns: list 
         error_msg += f"Type Mismatches: {wrong_types}\n"
     if null_criticals:
         error_msg += f"Critical Nulls Found: {null_criticals}\n"
-    
+
     if error_msg:
         raise AssertionError(f"Schema Validation Failed:\n{error_msg}")
